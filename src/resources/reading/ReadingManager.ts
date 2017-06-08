@@ -67,10 +67,10 @@ export class ReadingManager {
                         this.reading = reading;
                     });
             })
+            .then(() => { return this.updateStatus(); })
             .then(() => {
                 if (withUpdates) {
                     this.attachListeners();
-                    this.updateStatus();
                 }
                 // Start the reading if it has not already been started.
                 if (this.reading.state == "notstarted") {
@@ -111,11 +111,31 @@ export class ReadingManager {
 
     private updateStatus() {
         console.log("updating page status");
-        this.story.pages.forEach(page => {
-            page.updateStatus(this.reading.variables, this.story.conditions, this.story.locations, this.locationManager.location);
-        });
+        console.log(this.reading);
 
-        this.viewablePages = this.story.pages.all.filter(page => page.isViewable);
+        let self_ = this;
+        
+        return new Promise(function(resolve, reject) {
+            if (self_.reading.partner) {
+              self_.readingConnector.fetchById(self_.reading.partner)
+                .then(() => {
+                  let partnerReading = self_.readingConnector.byId(self_.reading.partner);
+                  console.log("Loaded partner reading in order to update status. Current reading is:");
+                  console.log(partnerReading);
+                  
+                  self_.story.pages.forEach(page => {
+                      page.updateStatus(self_.reading.variables, self_.story.conditions, self_.story.locations, self_.locationManager.location, partnerReading.variables);
+                  });
+
+                  self_.viewablePages = self_.story.pages.all.filter(page => page.isViewable);
+
+                  resolve();
+                });
+            } else {
+              console.log("Reading has no partner...");
+              reject();
+            }
+        });
     }
 
     executePageFunctions(page: Page) {

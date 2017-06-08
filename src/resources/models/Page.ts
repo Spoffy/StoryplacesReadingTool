@@ -185,7 +185,11 @@ export class Page extends BaseModel {
         this._isViewable = value;
     }
 
-    public updateStatus(variables: VariableCollection, conditions: ConditionCollection, locations: LocationCollection, userLocation: LocationInformation) {
+    public updateStatus(variables: VariableCollection, conditions: ConditionCollection, locations: LocationCollection, userLocation: LocationInformation, partnerVariables?: VariableCollection) {
+
+        console.log("Partner Variables:");
+        console.log(partnerVariables);
+
         this.isViewable = this.conditions.every((conditionId) => {
             return this.getCondition(conditions, conditionId).execute(variables, conditions);
         });

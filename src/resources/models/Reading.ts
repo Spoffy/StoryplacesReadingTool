@@ -42,24 +42,29 @@ export class Reading extends BaseModel {
 
 
     private _variables: VariableCollection;
+    private _otherPlayerVariables: VariableCollection;
     private _userId: string;
     private _storyId: string;
     private _name: string;
     private _state: string;
     private _timestamp: number;
+    partner: string;
 
     constructor(private variableCollectionFactory: (any?) => VariableCollection, typeChecker: TypeChecker, data?: any) {
         super(typeChecker);
         this.fromObject(data);
     }
 
-    fromObject(data: any = {id: undefined, readingId: undefined, userId: undefined, variables: undefined, name:undefined, state:undefined}) {
+    fromObject(data: any = {id: undefined, readingId: undefined, userId: undefined, partner: undefined, variables: undefined, otherPlayerVariables: undefined, name:undefined, state:undefined, userStoryRole: undefined}) {
         this.typeChecker.validateAsObjectAndNotArray("Data", data);
         this.id = data.id;
         this.storyId = data.storyId;
         this.userId = data.userId;
         this.name = data.name;
         this.variables = this.variableCollectionFactory(data.variables);
+        this.otherPlayerVariables = this.variableCollectionFactory(data.otherPlayerVariables);
+        this.partner = data.partner;
+
         this.state = (data.state || "notstarted");
         this.timestamp = data.timestamp;
     }
@@ -71,6 +76,7 @@ export class Reading extends BaseModel {
             storyId: this.storyId,
             userId: this.userId,
             variables: this.variables,
+            otherPlayerVariables: this.otherPlayerVariables,
             state: this.state,
             timestamp: this.timestamp,
         }
@@ -131,6 +137,15 @@ export class Reading extends BaseModel {
     set variables(value: VariableCollection) {
         this.typeChecker.validateAsObjectOrUndefined("Variables", value, "VariableCollection", VariableCollection);
         this._variables = value;
+    }
+
+    get otherPlayerVariables(): VariableCollection {
+        return this._otherPlayerVariables;
+    }
+
+    set otherPlayerVariables(value: VariableCollection) {
+        this.typeChecker.validateAsObjectOrUndefined("Variables", value, "VariableCollection", VariableCollection);
+        this._otherPlayerVariables = value;
     }
 
 }
