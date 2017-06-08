@@ -65,7 +65,7 @@ export class Page extends BaseModel {
         conditions: undefined,
         content: undefined,
         pageTransition: undefined,
-        hint: {locations: undefined, direction: undefined},
+        hint: undefined,
         functions: undefined
     }) {
         this.typeChecker.validateAsObjectAndNotArray("Data", data);
@@ -74,10 +74,14 @@ export class Page extends BaseModel {
         this.conditions = data.conditions;
         this.content = data.content;
         this.pageTransition = data.pageTransition;
+        console.log("Loading data..");
+        console.log(data.hint);
+        console.log(this.hintLocations);
         if (data.hint) {
-            this.hintLocations = data.hint.locations;
-            this.hintDirection = data.hint.direction;
-        }
+            let {locations = [], direction} = data.hint;
+            this.hintLocations = locations;
+            this.hintDirection = direction;
+        } 
         this.functions = data.functions;
     }
 
