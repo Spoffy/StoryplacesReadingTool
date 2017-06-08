@@ -45,6 +45,7 @@ export abstract class BaseCondition extends BaseModel implements ExecutableCondi
         super(typeChecker);
     }
 
-    abstract execute(variables: VariableCollection, conditions: ConditionCollection, locations?: LocationCollection, userLocation?: LocationInformation): boolean;
+    abstract execute(variables: VariableCollection, conditions: ConditionCollection, locations?: LocationCollection, 
+                     userLocation?: LocationInformation, partnerVariables?: VariableCollection): boolean;
 
 }

@@ -191,12 +191,12 @@ export class Page extends BaseModel {
         console.log(partnerVariables);
 
         this.isViewable = this.conditions.every((conditionId) => {
-            return this.getCondition(conditions, conditionId).execute(variables, conditions);
+            return this.getCondition(conditions, conditionId).execute(variables, conditions, null, null, partnerVariables);
         });
 
         this.isReadable = this.isViewable
             && this.conditions.every((conditionId) => {
-                return this.getCondition(conditions, conditionId).execute(variables, conditions, locations, userLocation);
+                return this.getCondition(conditions, conditionId).execute(variables, conditions, locations, userLocation, partnerVariables);
             });
     }
 

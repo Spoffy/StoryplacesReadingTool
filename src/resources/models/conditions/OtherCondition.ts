@@ -42,9 +42,8 @@ import {LocationInformation} from "../../gps/LocationInformation";
 
 @inject(TypeChecker)
 
-export class LogicalCondition extends BaseCondition {
+export class OtherCondition extends BaseCondition {
 
-    private _operand: string;
     private _conditions: Array<string>;
 
     constructor(typeChecker: TypeChecker, data?: any) {
@@ -55,33 +54,20 @@ export class LogicalCondition extends BaseCondition {
         }
     }
 
-    fromObject(data = {id: undefined, operand: undefined, conditions: undefined}) {
+    fromObject(data = {id: undefined, conditions: undefined}) {
         this.typeChecker.validateAsObjectAndNotArray("Data", data);
         this.id = data.id;
-        this.operand = data.operand;
         this.conditions = data.conditions;
     }
 
     toJSON() {
         return {
             id: this.id,
-            type: "logical",
-            operand: this.operand,
+            type: "other",
             conditions: this.conditions
         };
     }
-
-    get operand(): string {
-        return this._operand;
-    }
-
-    set operand(value: string) {
-        this.typeChecker.validateAsStringOrUndefined("Operand", value);
-        if (value !== "AND" && value !== "OR" && value !== undefined) {
-            throw TypeError("Operand can only be AND or OR");
-        }
-        this._operand = value;
-    }
+    
 
     get conditions(): Array<string> {
         return this._conditions;
@@ -93,11 +79,13 @@ export class LogicalCondition extends BaseCondition {
     }
 
     execute(variables: VariableCollection, conditions: ConditionCollection, locations?: LocationCollection, userLocation?: LocationInformation, partnerVariables?: VariableCollection): boolean {
-        if (this.operand == "AND") {
-            return this.conditions.every(conditionIdToExecute => this.lookupAndTestCondition(conditionIdToExecute, variables, conditions, locations, userLocation));
+        if (partnerVariables != null) {
+          let result = this.conditions.every(conditionIdToExecute => this.lookupAndTestCondition(conditionIdToExecute, partnerVariables, conditions, locations, userLocation));
+          console.log("Checked partner variables - Result is:", result);
+          return result;
         }
-
-        return this.conditions.some(conditionIdToExecute => this.lookupAndTestCondition(conditionIdToExecute, variables, conditions, locations, userLocation));
+        console.log("Tried to execute other condition with no partner variables.");
+        return false;
     }
 
     private lookupAndTestCondition(conditionIdToExecute, variables: VariableCollection, conditions: ConditionCollection, locations: LocationCollection, userLocation: LocationInformation){
