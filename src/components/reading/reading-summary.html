@@ -38,6 +38,9 @@
         <div class="list-group-item-text">
             <span if.bind="reading.state == 'inprogress'" class="label label-success">In progress</span>
             <span if.bind="reading.state == 'notstarted'" class="label label-default">Not yet started</span>
+            <span class="label label-default">User ID: ${reading.id}</span>
+            <span if.bind="reading.partner != null" class="label label-default">Partner ID: ${reading.partner}</span>
+            <span if.bind="reading.partner == null" class="label label-default">No partner yet, try refreshing</span>
         </div>
     </a>
 
