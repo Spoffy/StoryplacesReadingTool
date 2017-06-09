@@ -93,24 +93,26 @@ export class LogicalCondition extends BaseCondition {
     }
 
     execute(variables: VariableCollection, conditions: ConditionCollection, locations?: LocationCollection, userLocation?: LocationInformation, partnerVariables?: VariableCollection): boolean {
+        console.log("Logical partner variables");
+        console.log(partnerVariables);
         if (this.operand == "AND") {
-            return this.conditions.every(conditionIdToExecute => this.lookupAndTestCondition(conditionIdToExecute, variables, conditions, locations, userLocation));
+            return this.conditions.every(conditionIdToExecute => this.lookupAndTestCondition(conditionIdToExecute, variables, conditions, locations, userLocation, partnerVariables));
         }
 
         if (this.operand == "NOT") {
-            return !this.conditions.every(conditionIdToExecute => this.lookupAndTestCondition(conditionIdToExecute, variables, conditions, locations, userLocation));
+            return !this.conditions.every(conditionIdToExecute => this.lookupAndTestCondition(conditionIdToExecute, variables, conditions, locations, userLocation, partnerVariables));
         }
 
-        return this.conditions.some(conditionIdToExecute => this.lookupAndTestCondition(conditionIdToExecute, variables, conditions, locations, userLocation));
+        return this.conditions.some(conditionIdToExecute => this.lookupAndTestCondition(conditionIdToExecute, variables, conditions, locations, userLocation, partnerVariables));
     }
 
-    private lookupAndTestCondition(conditionIdToExecute, variables: VariableCollection, conditions: ConditionCollection, locations: LocationCollection, userLocation: LocationInformation){
+    private lookupAndTestCondition(conditionIdToExecute, variables: VariableCollection, conditions: ConditionCollection, locations: LocationCollection, userLocation: LocationInformation, partnerVariables?: VariableCollection){
         let conditionToExecute = conditions.get(conditionIdToExecute);
 
         if (!conditionToExecute) {
             throw Error("Condition id " + conditionIdToExecute + " was not found");
         }
 
-        return conditionToExecute.execute(variables, conditions, locations, userLocation)
+        return conditionToExecute.execute(variables, conditions, locations, userLocation, partnerVariables)
     }
 }
