@@ -35,7 +35,7 @@
 <template>
     <a route-href="route: page-read; params.bind: {pageId: page.id, storyId: storyId, readingId: readingId}"
        class="list-group-item list-group-item-success" if.bind="page.isReadable">
-        ${page.name}
+        ${page.name}<br>
         <small>${page.hintDirection}</small>
     </a>
     <li class="list-group-item list-group-item-danger" if.bind="!page.isReadable">
