@@ -77,8 +77,8 @@ export class LogicalCondition extends BaseCondition {
 
     set operand(value: string) {
         this.typeChecker.validateAsStringOrUndefined("Operand", value);
-        if (value !== "AND" && value !== "OR" && value !== undefined) {
-            throw TypeError("Operand can only be AND or OR");
+        if (value !== "AND" && value !== "OR" && value !== "NOT" && value !== undefined) {
+            throw TypeError("Operand can only be AND or OR or NOT");
         }
         this._operand = value;
     }
@@ -95,6 +95,10 @@ export class LogicalCondition extends BaseCondition {
     execute(variables: VariableCollection, conditions: ConditionCollection, locations?: LocationCollection, userLocation?: LocationInformation, partnerVariables?: VariableCollection): boolean {
         if (this.operand == "AND") {
             return this.conditions.every(conditionIdToExecute => this.lookupAndTestCondition(conditionIdToExecute, variables, conditions, locations, userLocation));
+        }
+
+        if (this.operand == "NOT") {
+            return !this.conditions.every(conditionIdToExecute => this.lookupAndTestCondition(conditionIdToExecute, variables, conditions, locations, userLocation));
         }
 
         return this.conditions.some(conditionIdToExecute => this.lookupAndTestCondition(conditionIdToExecute, variables, conditions, locations, userLocation));
